@@ -1,5 +1,6 @@
 package com.example.nisumtest.activity
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import androidx.appcompat.app.AppCompatActivity
@@ -7,13 +8,14 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.nisumtest.databinding.ActivityMainBinding
-import com.example.nisumtest.viewmodel.MainActivityViewModel
+import com.example.nisumtest.utils.SELECTED_SONG
+import com.example.nisumtest.viewmodels.MainActivityViewModel
 import com.example.nisumtest.views.SongItem
 import com.google.android.material.internal.TextWatcherAdapter
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 
-class MainActivity : AppCompatActivity() {
+class SearchActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var viewModel: MainActivityViewModel
@@ -38,8 +40,13 @@ class MainActivity : AppCompatActivity() {
                 }
             })
             recyclerViewSongs.run {
-                layoutManager = LinearLayoutManager(this@MainActivity)
+                layoutManager = LinearLayoutManager(this@SearchActivity)
                 adapter = groupAdapter
+            }
+            groupAdapter.setOnItemClickListener { item, _ ->
+                if (item is SongItem) {
+                    onSongClicked(item)
+                }
             }
         }
     }
@@ -53,5 +60,11 @@ class MainActivity : AppCompatActivity() {
             clear()
             addAll(songList)
         }
+    }
+
+    private fun onSongClicked(songItem: SongItem) {
+        startActivity(Intent(this, SongDetailActivity::class.java).apply {
+            putExtra(SELECTED_SONG, songItem.getSong())
+        })
     }
 }

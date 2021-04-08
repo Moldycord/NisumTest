@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:paddingStart="16dp"
     android:paddingEnd="16dp"
-    tools:context=".activity.MainActivity">
+    tools:context=".activity.SearchActivity">
 
     <EditText
         android:id="@+id/edit_text_search"
