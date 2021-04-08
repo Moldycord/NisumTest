@@ -4,6 +4,7 @@ import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.Handler
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -30,7 +31,7 @@ class SongDetailActivity : AppCompatActivity() {
         }
     }
     private var isSourceSet = false
-
+    private var isSeekbarUpdated = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySongDetailBinding.inflate(layoutInflater)
@@ -50,6 +51,13 @@ class SongDetailActivity : AppCompatActivity() {
                 adapter = groupAdapter
             }
             imageViewPlayPause.setOnClickListener { changeIcon() }
+            toolbar.run {
+                setNavigationOnClickListener { onBackPressed() }
+                navigationIcon = ContextCompat.getDrawable(
+                    this@SongDetailActivity,
+                    R.drawable.baseline_arrow_back_24
+                )
+            }
         }
         groupAdapter.setOnItemClickListener { item, _ ->
             if (item is SongItem) {
@@ -103,6 +111,7 @@ class SongDetailActivity : AppCompatActivity() {
             binding.imageViewPlayPause.setImageResource(R.drawable.baseline_pause_24)
             mMediaPlayer.start()
         }
+        updateProgress()
     }
 
     private fun loadFirstSong() {
@@ -116,20 +125,20 @@ class SongDetailActivity : AppCompatActivity() {
     }
 
     private fun updateProgress() {
-        binding.seekBarProgressSong.max = mMediaPlayer.duration / 1000
-        val mHandler = Handler()
-        this.runOnUiThread(object : Runnable {
-            override fun run() {
-                if (mMediaPlayer.isPlaying) {
-                    //  val progress = mMediaPlayer.currentPosition / mMediaPlayer.duration * 100;
-                    //binding.seekBarProgressSong.progress = progress
-
-                    val mCurrentPosition = mMediaPlayer.currentPosition / 1000
-                    binding.seekBarProgressSong.progress = mCurrentPosition
+        if (!isSeekbarUpdated) {
+            binding.seekBarProgressSong.max = mMediaPlayer.duration / 1000
+            val mHandler = Handler()
+            this.runOnUiThread(object : Runnable {
+                override fun run() {
+                    if (mMediaPlayer.isPlaying) {
+                        val mCurrentPosition = mMediaPlayer.currentPosition / 1000
+                        binding.seekBarProgressSong.progress = mCurrentPosition
+                    }
+                    mHandler.postDelayed(this, 1000)
                 }
-                mHandler.postDelayed(this, 1000)
-            }
-        })
+            })
+            isSeekbarUpdated = true
+        }
     }
 
     private fun restartPlayer() {
