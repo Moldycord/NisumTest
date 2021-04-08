@@ -2,6 +2,7 @@ package com.example.nisumtest.activity
 
 import android.media.MediaPlayer
 import android.os.Bundle
+import android.os.Handler
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -23,7 +24,12 @@ class SongDetailActivity : AppCompatActivity() {
     private lateinit var selectedSong: ITunesSong
     private val groupAdapter = GroupAdapter<GroupieViewHolder>()
     private lateinit var viewModel: SongDetailActivityViewModel
-    private var mMediaPlayer: MediaPlayer = MediaPlayer()
+    private var mMediaPlayer: MediaPlayer = MediaPlayer().apply {
+        setOnCompletionListener {
+            binding.seekBarProgressSong.progress = 0
+            changeIcon()
+        }
+    }
     private var isSourceSet = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -87,6 +93,7 @@ class SongDetailActivity : AppCompatActivity() {
             mMediaPlayer.start()
             binding.imageViewPlayPause.setImageResource(R.drawable.baseline_pause_24)
         }
+        updateProgress()
     }
 
     private fun changeIcon() {
@@ -107,6 +114,23 @@ class SongDetailActivity : AppCompatActivity() {
         } catch (e: IOException) {
             e.printStackTrace()
         }
+    }
+
+    private fun updateProgress() {
+        binding.seekBarProgressSong.max = mMediaPlayer.duration / 1000
+        val mHandler = Handler()
+        this.runOnUiThread(object : Runnable {
+            override fun run() {
+                if (mMediaPlayer.isPlaying) {
+                    //  val progress = mMediaPlayer.currentPosition / mMediaPlayer.duration * 100;
+                    //binding.seekBarProgressSong.progress = progress
+
+                    val mCurrentPosition = mMediaPlayer.currentPosition / 1000
+                    binding.seekBarProgressSong.progress = mCurrentPosition
+                }
+                mHandler.postDelayed(this, 1000)
+            }
+        })
     }
 
     override fun onPause() {
