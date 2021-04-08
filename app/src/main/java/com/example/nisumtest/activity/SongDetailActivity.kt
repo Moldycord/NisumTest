@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.nisumtest.R
 import com.example.nisumtest.databinding.ActivitySongDetailBinding
 import com.example.nisumtest.models.ITunesSong
 import com.example.nisumtest.utils.SELECTED_SONG
@@ -43,6 +44,7 @@ class SongDetailActivity : AppCompatActivity() {
                 layoutManager = LinearLayoutManager(this@SongDetailActivity)
                 adapter = groupAdapter
             }
+            imageViewPlayPause.setOnClickListener { changeIcon() }
         }
         groupAdapter.setOnItemClickListener { item, _ ->
             if (item is SongItem) {
@@ -50,6 +52,7 @@ class SongDetailActivity : AppCompatActivity() {
             }
         }
         setupObservers()
+        loadFirstSong()
     }
 
     private fun setupObservers() {
@@ -82,8 +85,34 @@ class SongDetailActivity : AppCompatActivity() {
     private fun showPlayerLayout() {
         if (isSourceSet) {
             mMediaPlayer.start()
-        } else {
+            binding.imageViewPlayPause.setImageResource(R.drawable.baseline_pause_24)
+        }
+    }
 
+    private fun changeIcon() {
+        if (mMediaPlayer.isPlaying) {
+            binding.imageViewPlayPause.setImageResource(R.drawable.baseline_play_arrow_24)
+            mMediaPlayer.pause()
+        } else {
+            binding.imageViewPlayPause.setImageResource(R.drawable.baseline_pause_24)
+            mMediaPlayer.start()
+        }
+    }
+
+    private fun loadFirstSong() {
+        try {
+            mMediaPlayer.reset()
+            mMediaPlayer.setDataSource(selectedSong.previewUrl)
+            mMediaPlayer.prepare()
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if (mMediaPlayer.isPlaying) {
+            mMediaPlayer.stop()
         }
     }
 }
