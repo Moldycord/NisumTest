@@ -83,7 +83,7 @@ class SongDetailActivity : AppCompatActivity() {
         if (isSourceSet) {
             mMediaPlayer.start()
         } else {
-            
+
         }
     }
 }
