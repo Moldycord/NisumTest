@@ -8,5 +8,9 @@ import retrofit2.http.Query
 interface ITunesService {
 
     @GET("/search")
-    fun searchSongs(@Query("term") name: String, @Query("limit") limit: Int): Single<ITunesResponse>
+    fun searchSongs(
+        @Query("term") name: String,
+        @Query("limit") limit: Int = 20,
+        @Query("mediaType") mediaType: String = "music"
+    ): Single<ITunesResponse>
 }

@@ -8,5 +8,8 @@ data class ITunesResponse(
 )
 
 data class ITunesSong(
-    @SerializedName("artistId") val artistId: Int
+    @SerializedName("artistId") val artistId: Int,
+    @SerializedName("trackName") val trackName: String,
+    @SerializedName("artistName") val artistName: String,
+    @SerializedName("artworkUrl60") val albumImage: String
 )
