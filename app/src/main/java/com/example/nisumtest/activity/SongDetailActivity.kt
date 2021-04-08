@@ -1,5 +1,6 @@
 package com.example.nisumtest.activity
 
+import android.media.MediaPlayer
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
@@ -13,6 +14,7 @@ import com.example.nisumtest.viewmodels.SongDetailActivityViewModel
 import com.example.nisumtest.views.SongItem
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
+import java.io.IOException
 
 class SongDetailActivity : AppCompatActivity() {
 
@@ -20,6 +22,8 @@ class SongDetailActivity : AppCompatActivity() {
     private lateinit var selectedSong: ITunesSong
     private val groupAdapter = GroupAdapter<GroupieViewHolder>()
     private lateinit var viewModel: SongDetailActivityViewModel
+    private var mMediaPlayer: MediaPlayer = MediaPlayer()
+    private var isSourceSet = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,6 +44,11 @@ class SongDetailActivity : AppCompatActivity() {
                 adapter = groupAdapter
             }
         }
+        groupAdapter.setOnItemClickListener { item, _ ->
+            if (item is SongItem) {
+                playSong(item)
+            }
+        }
         setupObservers()
     }
 
@@ -47,10 +56,34 @@ class SongDetailActivity : AppCompatActivity() {
         viewModel.getSongList().observe(this, Observer { onSongsReceived(it) })
     }
 
+    private fun playSong(item: SongItem) {
+        if (mMediaPlayer.isPlaying) {
+            mMediaPlayer.stop()
+        }
+        isSourceSet = try {
+            mMediaPlayer.reset()
+            mMediaPlayer.setDataSource(item.getSong().previewUrl)
+            mMediaPlayer.prepare()
+            true
+        } catch (e: IOException) {
+            e.printStackTrace()
+            false
+        }
+        showPlayerLayout()
+    }
+
     private fun onSongsReceived(songList: List<SongItem>) {
         groupAdapter.apply {
             clear()
             addAll(songList)
+        }
+    }
+
+    private fun showPlayerLayout() {
+        if (isSourceSet) {
+            mMediaPlayer.start()
+        } else {
+            
         }
     }
 }
