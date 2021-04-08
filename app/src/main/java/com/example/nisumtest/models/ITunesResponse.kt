@@ -16,5 +16,6 @@ data class ITunesSong(
     @SerializedName("artworkUrl100") val albumImage100: String,
     @SerializedName("collectionName") val albumName: String,
     @SerializedName("collectionId") val collectionId: Int,
-    @SerializedName("wrapperType") val wrapperType: String
+    @SerializedName("wrapperType") val wrapperType: String,
+    @SerializedName("previewUrl") val previewUrl: String
 ) : Serializable

@@ -1,7 +1,9 @@
 package com.example.nisumtest.viewmodels
 
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.OnLifecycleEvent
 import androidx.lifecycle.ViewModel
 import com.example.nisumtest.models.ITunesResponse
 import com.example.nisumtest.network.repository.ITunesRepository
@@ -38,5 +40,10 @@ class SongDetailActivityViewModel : ViewModel() {
 
     private fun onError(error: Throwable) {
         error.printStackTrace()
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+    fun onDestroy() {
+        disposable.dispose()
     }
 }
