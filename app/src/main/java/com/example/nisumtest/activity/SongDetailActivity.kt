@@ -26,8 +26,7 @@ class SongDetailActivity : AppCompatActivity() {
     private lateinit var viewModel: SongDetailActivityViewModel
     private var mMediaPlayer: MediaPlayer = MediaPlayer().apply {
         setOnCompletionListener {
-            binding.seekBarProgressSong.progress = 0
-            changeIcon()
+            restartPlayer()
         }
     }
     private var isSourceSet = false
@@ -131,6 +130,13 @@ class SongDetailActivity : AppCompatActivity() {
                 mHandler.postDelayed(this, 1000)
             }
         })
+    }
+
+    private fun restartPlayer() {
+        binding.apply {
+            seekBarProgressSong.progress = 0
+            imageViewPlayPause.setImageResource(R.drawable.baseline_play_arrow_24)
+        }
     }
 
     override fun onPause() {
