@@ -22,4 +22,6 @@ class SongItem(private val songItem: ITunesSong) : BindableItem<SongItemViewBind
     override fun initializeViewBinding(view: View): SongItemViewBinding {
         return SongItemViewBinding.bind(view)
     }
+
+    fun getSong(): ITunesSong = songItem
 }

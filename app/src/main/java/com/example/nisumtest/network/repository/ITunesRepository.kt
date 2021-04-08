@@ -12,4 +12,8 @@ class ITunesRepository {
     fun searchSong(name: String): Single<ITunesResponse> {
         return retrofit.searchSongs(name)
     }
+
+    fun getSongsByAlbumId(albumId: Int): Single<ITunesResponse> {
+        return retrofit.getSongsByAlbumId(albumId)
+    }
 }

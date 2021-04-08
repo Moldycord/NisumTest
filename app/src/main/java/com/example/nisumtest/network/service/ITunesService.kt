@@ -13,4 +13,10 @@ interface ITunesService {
         @Query("limit") limit: Int = 20,
         @Query("mediaType") mediaType: String = "music"
     ): Single<ITunesResponse>
+
+    @GET("/lookup")
+    fun getSongsByAlbumId(
+        @Query("id") id: Int,
+        @Query("entity") entity: String = "song"
+    ): Single<ITunesResponse>
 }
